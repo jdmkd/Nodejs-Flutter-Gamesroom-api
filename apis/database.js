@@ -8,7 +8,7 @@ const DB_URL=process.env.MONGO_ATLAS_URI;
 
 const clientOptions = { serverApi: { version: '1', strict: true, deprecationErrors: true } };
 
-async function run() {
+async function connectDB() {
   try {
     // Create a Mongoose client with a MongoClientOptions object to set the Stable API version
     await mongoose.connect(DB_URL, clientOptions);
@@ -19,12 +19,9 @@ async function run() {
     console.error("MongoDB connection error:", error.message);
     process.exit(1);
 
-  }finally {
-    // Ensures that the client will close when you finish/error
-    await mongoose.disconnect();
   }
 }
-run().catch(console.dir);
+connectDB().catch(console.dir);
 
 
 // const connectDB = async () => {
@@ -41,5 +38,13 @@ run().catch(console.dir);
 // };
 
 // connectDB();
+
+
+process.on('SIGINT', async () => {
+  await mongoose.disconnect();
+  console.log('MongoDB disconnected on app termination');
+  process.exit(0);
+});
+
 
 module.exports = mongoose;
