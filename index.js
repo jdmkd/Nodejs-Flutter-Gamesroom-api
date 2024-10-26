@@ -9,6 +9,12 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
+
+
+app.get("/", (req, res) => {
+    res.send("Hello, World!");
+});
+
 // POST endpoint for registration
 app.post('/register', async (req, res) => {
     const { name, email, password } = req.body;
